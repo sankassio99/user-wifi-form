@@ -1,51 +1,61 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
+
 <head>
-<title>internet hotspot > login</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="pragma" content="no-cache" />
-<meta http-equiv="expires" content="-1" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-
-
+	<title>internet hotspot > login</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="expires" content="-1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+	<style>
+		body {
+			font-family: 'Roboto';
+		}
+	</style>
 </head>
 
 <body>
-$(if chap-id)
+	$(if chap-id)
 
-	<iframe src="http://localhost/" id="frameq" frameborder="0"></iframe>
+	<form name="sendin" action="$(link-login-only)" method="post" class="form">
+		<div class="segment">
+			<h1>Sign up</h1>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+				Rerum itaque dolorem deserunt consequuntur, et est eius fuga</p>
+		</div>
 
-	<form name="sendin" action="$(link-login-only)" method="post">
-		<input type="hidden" name="username" value="hotspot"/>
+		<div class="input-group">
+			<label>
+				<input type="text" placeholder="Nome" />
+			</label>
+			<label>
+				<input type="email" placeholder="Email" />
+			</label>
+			<label>
+				<input type="tel" placeholder="Telefone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"/>
+			</label>
+		</div>
+		<input type="hidden" name="username" value="hotspot" />
 		<input type="hidden" name="password" />
 		<!--<input type="hidden" name="dst" value="$(link-orig)" />-->
-		<input type="hidden" name="popup" value="true" /> 
-		<input type="submit" value="OK" />
+		<input type="hidden" name="popup" value="true" />
+		<!-- <button type="submit" class="red" value="OK" /> -->
+		<button class="red" type="submit"><i class="icon ion-md-lock"></i> Login </button>
 	</form>
-
-	
-
-
-
 
 	<script type="text/javascript" src="/md5.js"></script>
 	<script type="text/javascript">
-	<!--
-
-		var iframe_document = document.getElementById('frameq').contentWindow.document;
-		console.log(iframe_document);
-		console.log(document);
-		//iframe_document.getElementById("cOn").addEventListener('click', function(){ document.sendin.submit()});
-
 		document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
-
-	//-->
 	</script>
-$(endif)
-	
+	$(endif)
 
-	$(if error)<br /><div style="color: #FF8080; font-size: 9px">$(error)</div>$(endif)
-	
+
+	$(if error)<br />
+	<div style="color: #FF8080; font-size: 9px">$(error)</div>$(endif)
+
 </body>
+
 </html>
