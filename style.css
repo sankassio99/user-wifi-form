@@ -109,7 +109,7 @@ button {
 }
 
 .input-group {
-    display: flex;
+    display: none;
     flex-direction: column;
     row-gap: 15px;
     align-items: center;
