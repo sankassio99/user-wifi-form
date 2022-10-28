@@ -42,13 +42,26 @@
 		<input type="hidden" name="password" />
 		<!--<input type="hidden" name="dst" value="$(link-orig)" />-->
 		<input type="hidden" name="popup" value="true" />
-		<!-- <button type="submit" class="red" value="OK" /> -->
+		<div class="select">
+			<button class="unit" name="button1"type="button"> Formulario </button>
+			<button class="unit" name="button2"type="button"> Conta Google </button>
+			<button class="unit" name="button3"type="button"> Facebook </button>
+		</div>
 		<button class="red" type="submit"><i class="icon ion-md-lock"></i> Login </button>
 	</form>
 
 	<script type="text/javascript" src="/md5.js"></script>
 	<script type="text/javascript">
 		document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
+		function showdiv(id) {
+			var state = document.getElementById(id).style.display;
+			if (state == "flex"){
+				document.getElementById(id).style.display = "none";
+			}else{
+				document.getElementById(id).style.display = "flex";
+			}
+		}
+		document.sendin.button1.addEventListener('click', function(){showdiv("formulario")} );
 	</script>
 	$(endif)
 
