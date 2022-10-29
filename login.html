@@ -19,38 +19,148 @@
 
 <body>
 	$(if chap-id)
+	<!--Parte que faz login no RB-->
+	<form name="sendin" action="$(link-login-only)" method="post" >
+		<input type="hidden" name="username" value="hotspot" />
+		<input type="hidden" name="password" />
+		<!--<input type="hidden" name="dst" value="$(link-orig)" />-->
+		<input type="hidden" name="popup" value="true" />
+	</form>
 
-	<form name="sendin" action="$(link-login-only)" method="post" class="form">
+	<script type="text/javascript" src="/md5.js"></script>
+	<script type="text/javascript">
+	
+	    function doLogin() {
+			console.log("doLogin");
+			//document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
+			//document.sendin.submit();
+			return false;
+	    }
+	</script>
+		
+	
+	$(endif)
+
+
+
+	<form name="login" action="$(link-login-only)" method="post" class="form" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+
 		<div class="segment">
 			<h1>Sign up</h1>
 			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
 				Rerum itaque dolorem deserunt consequuntur, et est eius fuga</p>
 		</div>
 
-		<div class="input-group">
+		<div id="formulario" class="input-group">
+			<!--<input type="hidden" name="macaddress" value="$(mac)" /> função para obter macaddress -->
 			<label>
-				<input type="text" placeholder="Nome" />
+				<input type="text" name="nome" placeholder="Nome" />
 			</label>
 			<label>
-				<input type="email" placeholder="Email" />
+				<input type="email" name="email"placeholder="Email" />
 			</label>
 			<label>
-				<input type="tel" placeholder="Telefone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"/>
+				<input type="tel" name="telefone" placeholder="Telefone" />
 			</label>
+			<button class="red" name="login" type="button"><i class="icon ion-md-lock"></i> Login </button>
 		</div>
-		<input type="hidden" name="username" value="hotspot" />
-		<input type="hidden" name="password" />
-		<!--<input type="hidden" name="dst" value="$(link-orig)" />-->
-		<input type="hidden" name="popup" value="true" />
-		<!-- <button type="submit" class="red" value="OK" /> -->
-		<button class="red" type="submit"><i class="icon ion-md-lock"></i> Login </button>
+		
+		<div class="select">
+			<button class="unit" name="button1" type="button"> Formulario </button>
+			<button class="unit" name="button2" type="button"> Conta Google </button>
+			<button class="unit" name="button3" type="button"> Facebook </button>
+		</div>
+		
 	</form>
 
-	<script type="text/javascript" src="/md5.js"></script>
-	<script type="text/javascript">
-		document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
+	<script type="module">	
+		// Podemos criar um arquivo .js para tirar esse script daqui, to deixando ele aqui por enquanto para ficar mais facil de editar  
+
+		// Import the functions you need from the SDKs you need
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+ 		import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
+		import { getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
+		import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
+		// TODO: Add SDKs for Firebase products that you want to use
+		// https://firebase.google.com/docs/web/setup#available-libraries
+	  
+		// Your web app's Firebase configuration
+		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+		  apiKey: "AIzaSyAmyH-aOtU-zpOnun7V02FOGf35Z2KuOCM",
+		  authDomain: "projeto-x-450d9.firebaseapp.com",
+		  projectId: "projeto-x-450d9",
+		  storageBucket: "projeto-x-450d9.appspot.com",
+		  messagingSenderId: "647232373948",
+		  appId: "1:647232373948:web:18e0179590cfc2208b3cb9",
+		  measurementId: "G-NGG7L31LKE"
+		};
+	  
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+		const analytics = getAnalytics(app);
+		const db = getFirestore(app);
+		const auth = getAuth(app);
+		const provider = new GoogleAuthProvider();
+				
+		
+		
+		
+		function showDiv(id) {
+			var state = document.getElementById(id).style.display;
+			if (state == "flex"){
+				document.getElementById(id).style.display = "none";
+			}else{
+				document.getElementById(id).style.display = "flex";
+			}
+		}
+
+		async function gravar (Mac, Nome, Email, Telefone){
+			
+			try {
+			const docRef = await addDoc(collection(db, "users"), {
+				macaddress:   Mac ,
+				nome: Nome,
+				email: Email,
+				telefone: Telefone
+			});
+			console.log("Document written with ID: ", docRef.id);
+			} catch (e) {
+			console.error("Error adding document: ", e);
+			}
+
+			
+		}
+
+		function loginGoogle (){
+			signInWithPopup(auth, provider)
+			.then((result) => {
+				// The signed-in user info.
+				const user = result.user;
+				console.log(user);
+				gravar("0",user.displayName,user.email,user.phoneNumber);
+				
+			}).catch((error) => {
+				// Handle Errors here.
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				// The email of the user's account used.
+				const email = error.customData.email;
+				// The AuthCredential type that was used.
+				const credential = GoogleAuthProvider.credentialFromError(error);
+				// ...
+			});
+		}
+
+		
+
+		
+
+		document.login.button1.addEventListener('click', function(){showDiv("formulario")} );
+		document.login.button2.addEventListener('click', function(){loginGoogle ()} );
+		document.login.login.addEventListener('click', function(){gravar ("0", document.login.nome.value, document.login.email.value,document.login.telefone.value)});
 	</script>
-	$(endif)
+	
 
 
 	$(if error)<br />
