@@ -51,8 +51,13 @@
 				Rerum itaque dolorem deserunt consequuntur, et est eius fuga</p>
 		</div>
 
+		<div id="bvDiv" class="bvdiv">
+			 <label id="bvname"></label>
+			 <button class="red" name="bvlogin" type="button"><i class="icon ion-md-lock"></i> Login </button>
+		</div>
+
 		<div id="formulario" class="input-group">
-			<!--<input type="hidden" name="macaddress" value="$(mac)" /> função para obter macaddress -->
+			<input type="hidden" name="macaddress" value="74:DE:2B:F1:DB:00" /> <!-- value="$(mac)" -- função RB para obter macaddress -->
 			<label>
 				<input type="text" name="nome" placeholder="Nome" />
 			</label>
@@ -118,8 +123,8 @@
 		async function gravar (Mac, Nome, Email, Telefone){
 			
 			try {
-			const docRef = await addDoc(collection(db, "users"), {
-				macaddress:   Mac ,
+			const docRef = await setDoc(doc(db, "users",Mac), {
+				//macaddress:   Mac ,
 				nome: Nome,
 				email: Email,
 				telefone: Telefone
@@ -130,6 +135,21 @@
 			}
 
 			
+		}
+
+		async function getDb (Mac){
+
+			const docSnap = await getDoc(doc(db,"users",Mac));
+
+
+			if(docSnap.exists()){
+
+				document.getElementById("bvname").innerHTML = "Seja bem vindo " + docSnap.data().nome;
+
+				showDiv("bvDiv");
+				
+			}
+
 		}
 
 		function loginGoogle (){
@@ -158,7 +178,10 @@
 
 		document.login.button1.addEventListener('click', function(){showDiv("formulario")} );
 		document.login.button2.addEventListener('click', function(){loginGoogle ()} );
-		document.login.login.addEventListener('click', function(){gravar ("0", document.login.nome.value, document.login.email.value,document.login.telefone.value)});
+		document.login.button3.addEventListener('click', function(){} );
+		document.login.login.addEventListener('click', function(){gravar (document.login.macaddress.value, document.login.nome.value, document.login.email.value,document.login.telefone.value)});
+
+		window.onload = getDb ("74:DE:2B:F1:DB:00");
 	</script>
 	
 
