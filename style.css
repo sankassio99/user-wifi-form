@@ -76,11 +76,19 @@ button:active {
 button .icon {
     margin-right: 16px/2;
 }
-.select{
-    
-    flex-direction: line;
-    align-self: center;
-    
+.btn-group{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.btn-group .social-auth {
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-group .button1 {
+    width: 100%;
 }
 
 .unit {
