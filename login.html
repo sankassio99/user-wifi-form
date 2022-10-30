@@ -38,10 +38,7 @@
 		}
 	</script>
 
-
 	$(endif)
-
-
 
 	<form name="login" action="$(link-login-only)" method="post" class="form" $(if chap-id) onSubmit="return doLogin()"
 		$(endif)>
@@ -66,7 +63,7 @@
 			<button class="red" name="login" type="button"><i class="icon ion-md-lock"></i> Login </button>
 		</div>
 
-		<div class="btn-group">
+		<div class="btn-group" id="btn-group">
 			<button class="unit" name="button1" type="button"> Formulario </button>
 			<div class="social-auth">
 				<button class="unit" name="button2" type="button"> Conta Google </button>
@@ -106,16 +103,9 @@
 		const auth = getAuth(app);
 		const provider = new GoogleAuthProvider();
 
-
-
-
-		function showDiv(id) {
-			var state = document.getElementById(id).style.display;
-			if (state == "flex") {
-				document.getElementById(id).style.display = "none";
-			} else {
-				document.getElementById(id).style.display = "flex";
-			}
+		function showForm() {
+			document.getElementById("formulario").style.display = "flex";
+			document.getElementById("btn-group").style.display = "none";
 		}
 
 		async function gravar(Mac, Nome, Email, Telefone) {
@@ -155,11 +145,7 @@
 				});
 		}
 
-
-
-
-
-		document.login.button1.addEventListener('click', function () { showDiv("formulario") });
+		document.login.button1.addEventListener('click', () => showForm());
 		document.login.button2.addEventListener('click', function () { loginGoogle() });
 		document.login.login.addEventListener('click', function () { gravar("0", document.login.nome.value, document.login.email.value, document.login.telefone.value) });
 	</script>
