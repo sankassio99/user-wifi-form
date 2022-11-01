@@ -120,7 +120,13 @@ button {
     color: #fff;
     background-color: #00804b;
 }
-
+.bvdiv{
+    display: none;
+    flex-direction: column;
+    padding: 16px * 2 0;
+    align-items: center;
+    text-align: center;
+}
 .input-group {
     display: none;
     flex-direction: column;
@@ -129,10 +135,4 @@ button {
     justify-content: flex-start;
 }
 
-.input-group label{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 0;
-    flex: 1;
-}
+

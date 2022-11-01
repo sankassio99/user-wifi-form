@@ -48,8 +48,14 @@
 				ou Facebook para liberar o acesso ao Wifi</p>
 		</div>
 
-		<form id="formulario" class="input-group form">
-			<!--<input type="hidden" name="macaddress" value="$(mac)" /> função para obter macaddress -->
+		<div id="bvDiv" class="bvdiv">
+			 <label id="bvname"></label>
+			 <button class="red" name="bvlogin" type="button"><i class="icon ion-md-lock"></i> Login </button>
+		</div>
+    
+    <form id="formulario" class="input-group form">
+			<input type="hidden" name="macaddress" value="74:DE:2B:F1:DB:00" /> <!-- value="$(mac)" -- função RB para obter macaddress -->
+
 			<label>
 				<input type="text" name="nome" placeholder="Nome" required />
 			</label>
@@ -117,8 +123,13 @@
 			}
 
 			try {
-				const docRef = await addDoc(collection(db, "users"), data);
-				console.log("Document written with ID: ", docRef.id);
+			const docRef = await setDoc(doc(db, "users",Mac), {
+				//macaddress:   Mac ,
+				nome: Nome,
+				email: Email,
+				telefone: Telefone
+			});
+			console.log("Document written with ID: ", docRef.id);
 			} catch (e) {
 				console.error("Error adding document: ", e);
 			}
@@ -126,7 +137,23 @@
 
 		}
 
-		function loginGoogle() {
+		async function getDb (Mac){
+
+			const docSnap = await getDoc(doc(db,"users",Mac));
+
+
+			if(docSnap.exists()){
+
+				document.getElementById("bvname").innerHTML = "Seja bem vindo " + docSnap.data().nome;
+
+				showDiv("bvDiv");
+				
+			}
+
+		}
+
+		function loginGoogle (){
+
 			signInWithPopup(auth, provider)
 				.then((result) => {
 					// The signed-in user info.
@@ -153,8 +180,11 @@
 			const email = document.getElementsByName("email")[0].value;
 			const phone = document.getElementsByName("telefone")[0].value;
 
+
 			gravar("0", name, email, phone);
 		}
+    
+    window.onload = getDb ("74:DE:2B:F1:DB:00");
 
 		const form = document.getElementById("formulario");
 		form.addEventListener('submit', () => submitForm(event));
@@ -165,6 +195,7 @@
 
 		buttonForm.addEventListener('click', () => showForm());
 		buttonGoogle.addEventListener('click', function () { loginGoogle() });
+
 	</script>
 
 
