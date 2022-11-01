@@ -13,6 +13,7 @@ button {
 
 div,
 p {
+    text-align: center;
     color: #111111;
     text-shadow: 1px 1px 1px #fff;
 }
@@ -121,14 +122,21 @@ button {
     background-color: #00804b;
 }
 .bvdiv{
-    display: none;
-    flex-direction: column;
-    padding: 16px * 2 0;
-    align-items: center;
+    padding: 16px;
+    width: 16px * 20;
     text-align: center;
+    
 }
+p,
+.descrição,
+.btn-group,
+.bvdiv,
 .input-group {
     display: none;
+}
+
+.bvdiv,
+.input-group {
     flex-direction: column;
     row-gap: 15px;
     align-items: center;
