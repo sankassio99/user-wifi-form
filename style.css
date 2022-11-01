@@ -20,20 +20,24 @@ p {
 form {
     padding: 16px;
     width: 16px * 20;
-    margin: 0 auto;
 }
 
 .segment {
     padding: 16px * 2 0;
     text-align: center;
 }
-.form {
+.body {
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
     max-width: 400px;
     box-shadow: 2px 2px 5px #babecc, -5px -5px 10px #fff;
     border-radius: 10px;
-    padding: 35px 15px 35px 15px;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
 }
 button,
 input {
@@ -43,7 +47,6 @@ input {
     border-radius: 16px;
     padding: 16px;
     background-color: #ebecf0;
-    text-shadow: 1px 1px 0 #fff;
 }
 
 label {
@@ -76,11 +79,20 @@ button:active {
 button .icon {
     margin-right: 16px/2;
 }
-.select{
-    
-    flex-direction: line;
-    align-self: center;
-    
+
+.btn-group{
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.btn-group .social-auth {
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-group .button1 {
+    width: 100%;
 }
 
 .unit {
@@ -93,7 +105,7 @@ button .icon {
     margin-right: 0;
 }
 button {
-    color: #61677c;
+    /* color: #61677c; */
     font-weight: bold;
     box-shadow: -5px -5px 20px #fff, 5px 5px 20px #babecc;
     transition: all 0.2s ease-in-out;
@@ -105,7 +117,8 @@ button {
 .red {
     display: block;
     width: 100%;
-    color: #ae1100;
+    color: #fff;
+    background-color: #00804b;
 }
 .bvdiv{
     display: none;

@@ -20,7 +20,7 @@
 <body>
 	$(if chap-id)
 	<!--Parte que faz login no RB-->
-	<form name="sendin" action="$(link-login-only)" method="post" >
+	<form name="sendin" action="$(link-login-only)" method="post">
 		<input type="hidden" name="username" value="hotspot" />
 		<input type="hidden" name="password" />
 		<!--<input type="hidden" name="dst" value="$(link-orig)" />-->
@@ -29,99 +29,99 @@
 
 	<script type="text/javascript" src="/md5.js"></script>
 	<script type="text/javascript">
-	
-	    function doLogin() {
+
+		function doLogin() {
 			console.log("doLogin");
 			//document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
 			//document.sendin.submit();
 			return false;
-	    }
+		}
 	</script>
-		
-	
+
 	$(endif)
 
-
-
-	<form name="login" action="$(link-login-only)" method="post" class="form" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+	<div class="body" name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
 
 		<div class="segment">
-			<h1>Sign up</h1>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-				Rerum itaque dolorem deserunt consequuntur, et est eius fuga</p>
+			<h1>Nome do Estabelecimento</h1>
+			<p>Preencha o formulário ou entre com uma conta do Google
+				ou Facebook para liberar o acesso ao Wifi</p>
 		</div>
 
 		<div id="bvDiv" class="bvdiv">
 			 <label id="bvname"></label>
 			 <button class="red" name="bvlogin" type="button"><i class="icon ion-md-lock"></i> Login </button>
 		</div>
-
-		<div id="formulario" class="input-group">
+    
+    <form id="formulario" class="input-group form">
 			<input type="hidden" name="macaddress" value="74:DE:2B:F1:DB:00" /> <!-- value="$(mac)" -- função RB para obter macaddress -->
-			<label>
-				<input type="text" name="nome" placeholder="Nome" />
-			</label>
-			<label>
-				<input type="email" name="email"placeholder="Email" />
-			</label>
-			<label>
-				<input type="tel" name="telefone" placeholder="Telefone" />
-			</label>
-			<button class="red" name="login" type="button"><i class="icon ion-md-lock"></i> Login </button>
-		</div>
-		
-		<div class="select">
-			<button class="unit" name="button1" type="button"> Formulario </button>
-			<button class="unit" name="button2" type="button"> Conta Google </button>
-			<button class="unit" name="button3" type="button"> Facebook </button>
-		</div>
-		
-	</form>
 
-	<script type="module">	
+			<label>
+				<input type="text" name="nome" placeholder="Nome" required />
+			</label>
+			<label>
+				<input type="email" name="email" placeholder="Email" required />
+			</label>
+			<label>
+				<input type="tel" name="telefone" placeholder="Telefone" required />
+			</label>
+			<button class="red" name="login" type="submit"><i class="icon ion-md-lock"></i> Login </button>
+		</form>
+
+		<div class="btn-group" id="btn-group">
+			<button class="unit" id="buttonForm" type="button"> Formulário </button>
+			<div class="social-auth">
+				<button class="unit" name="button2" id="buttonGoogle" type="button"> Conta Google </button>
+				<button class="unit" name="button3" id="buttonFacebook" type="button"> Facebook </button>
+			</div>
+		</div>
+
+	</div>
+
+	<script type="module">
 		// Podemos criar um arquivo .js para tirar esse script daqui, to deixando ele aqui por enquanto para ficar mais facil de editar  
 
 		// Import the functions you need from the SDKs you need
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
- 		import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
+		import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
 		import { getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
 		import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
 		// TODO: Add SDKs for Firebase products that you want to use
 		// https://firebase.google.com/docs/web/setup#available-libraries
-	  
+
 		// Your web app's Firebase configuration
 		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 		const firebaseConfig = {
-		  apiKey: "AIzaSyAmyH-aOtU-zpOnun7V02FOGf35Z2KuOCM",
-		  authDomain: "projeto-x-450d9.firebaseapp.com",
-		  projectId: "projeto-x-450d9",
-		  storageBucket: "projeto-x-450d9.appspot.com",
-		  messagingSenderId: "647232373948",
-		  appId: "1:647232373948:web:18e0179590cfc2208b3cb9",
-		  measurementId: "G-NGG7L31LKE"
+			apiKey: "AIzaSyAmyH-aOtU-zpOnun7V02FOGf35Z2KuOCM",
+			authDomain: "projeto-x-450d9.firebaseapp.com",
+			projectId: "projeto-x-450d9",
+			storageBucket: "projeto-x-450d9.appspot.com",
+			messagingSenderId: "647232373948",
+			appId: "1:647232373948:web:18e0179590cfc2208b3cb9",
+			measurementId: "G-NGG7L31LKE"
 		};
-	  
+
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
 		const analytics = getAnalytics(app);
 		const db = getFirestore(app);
 		const auth = getAuth(app);
 		const provider = new GoogleAuthProvider();
-				
-		
-		
-		
-		function showDiv(id) {
-			var state = document.getElementById(id).style.display;
-			if (state == "flex"){
-				document.getElementById(id).style.display = "none";
-			}else{
-				document.getElementById(id).style.display = "flex";
-			}
+
+		function showForm() {
+			document.getElementById("formulario").style.display = "flex";
+			document.getElementById("btn-group").style.display = "none";
 		}
 
-		async function gravar (Mac, Nome, Email, Telefone){
-			
+		async function gravar(mac, name, email, phone) {
+
+			const data = {
+				macaddress: mac,
+				nome: name,
+				email: email,
+				telefone: phone
+			}
+
 			try {
 			const docRef = await setDoc(doc(db, "users",Mac), {
 				//macaddress:   Mac ,
@@ -131,10 +131,10 @@
 			});
 			console.log("Document written with ID: ", docRef.id);
 			} catch (e) {
-			console.error("Error adding document: ", e);
+				console.error("Error adding document: ", e);
 			}
 
-			
+
 		}
 
 		async function getDb (Mac){
@@ -153,37 +153,51 @@
 		}
 
 		function loginGoogle (){
+
 			signInWithPopup(auth, provider)
-			.then((result) => {
-				// The signed-in user info.
-				const user = result.user;
-				console.log(user);
-				gravar("0",user.displayName,user.email,user.phoneNumber);
-				
-			}).catch((error) => {
-				// Handle Errors here.
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				// The email of the user's account used.
-				const email = error.customData.email;
-				// The AuthCredential type that was used.
-				const credential = GoogleAuthProvider.credentialFromError(error);
-				// ...
-			});
+				.then((result) => {
+					// The signed-in user info.
+					const user = result.user;
+					console.log(user);
+					gravar("0", user.displayName, user.email, user.phoneNumber);
+
+				}).catch((error) => {
+					// Handle Errors here.
+					const errorCode = error.code;
+					const errorMessage = error.message;
+					// The email of the user's account used.
+					const email = error.customData.email;
+					// The AuthCredential type that was used.
+					const credential = GoogleAuthProvider.credentialFromError(error);
+					// ...
+				});
 		}
 
-		
+		function submitForm(event) {
+			event.preventDefault();
 
-		
+			const name = document.getElementsByName("nome")[0].value;
+			const email = document.getElementsByName("email")[0].value;
+			const phone = document.getElementsByName("telefone")[0].value;
 
-		document.login.button1.addEventListener('click', function(){showDiv("formulario")} );
-		document.login.button2.addEventListener('click', function(){loginGoogle ()} );
-		document.login.button3.addEventListener('click', function(){} );
-		document.login.login.addEventListener('click', function(){gravar (document.login.macaddress.value, document.login.nome.value, document.login.email.value,document.login.telefone.value)});
 
-		window.onload = getDb ("74:DE:2B:F1:DB:00");
+			gravar("0", name, email, phone);
+		}
+    
+    window.onload = getDb ("74:DE:2B:F1:DB:00");
+
+		const form = document.getElementById("formulario");
+		form.addEventListener('submit', () => submitForm(event));
+
+		const buttonForm = document.getElementById("buttonForm");
+		const buttonFacebook = document.getElementById("buttonFacebook");
+		const buttonGoogle = document.getElementById("buttonGoogle");
+
+		buttonForm.addEventListener('click', () => showForm());
+		buttonGoogle.addEventListener('click', function () { loginGoogle() });
+
 	</script>
-	
+
 
 
 	$(if error)<br />
