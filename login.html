@@ -32,8 +32,8 @@
 
 		function doLogin() {
 			console.log("doLogin");
-			//document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
-			//document.sendin.submit();
+			document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
+			document.sendin.submit();
 			return false;
 		}
 	</script>
@@ -50,7 +50,7 @@
 
 		<div id="loading">
 			<label> Verificando dispositivo </label>
-			<img src="imagens/loading.gif">
+			<img src="img/loading.gif">
 		</div>
 
 
@@ -122,26 +122,16 @@
 
 		async function gravar(mac, name, email, phone) {
 
-			const data = {
-				macaddress: mac,
+			try {
+			const docRef = await setDoc(doc(db, "users",mac), {
 				nome: name,
 				email: email,
 				telefone: phone
-			}
-
-			try {
-			const docRef = await setDoc(doc(db, "users",Mac), {
-				//macaddress:   Mac ,
-				nome: Nome,
-				email: Email,
-				telefone: Telefone
 			});
-			console.log("Document written with ID: ", docRef.id);
+			//console.log("Document written with ID: ", mac);
 			} catch (e) {
 				console.error("Error adding document: ", e);
 			}
-
-
 		}
 
 		async function boasVindas(){ 
@@ -169,9 +159,9 @@
 				.then((result) => {
 					// The signed-in user info.
 					const user = result.user;
-					console.log(user);
-					gravar("0", user.displayName, user.email, user.phoneNumber);
-
+					const mac = document.getElementsByName("macaddress")[0].value;
+					gravar(mac, user.displayName, user.email, user.phoneNumber);
+					doLogin() 
 				}).catch((error) => {
 					// Handle Errors here.
 					const errorCode = error.code;
@@ -186,13 +176,13 @@
 
 		function submitForm(event) {
 			event.preventDefault();
-
+			const mac = document.getElementsByName("macaddress")[0].value;
 			const name = document.getElementsByName("nome")[0].value;
 			const email = document.getElementsByName("email")[0].value;
 			const phone = document.getElementsByName("telefone")[0].value;
 
 
-			gravar("0", name, email, phone);
+			gravar(mac, name, email, phone);
 		}
 
 		function clicForm() {
