@@ -31,30 +31,37 @@
 	<script type="text/javascript">
 
 		function doLogin() {
-			console.log("doLogin");
-			//document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
-			//document.sendin.submit();
+			document.sendin.password.value = hexMD5('$(chap-id)' + "12345678" + '$(chap-challenge)');
+			document.sendin.submit();
 			return false;
 		}
 	</script>
 
 	$(endif)
 
-	<div class="body" name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+	<div  class="body" name="login" action="$(link-login-only)" method="post">
 
 		<div class="segment">
 			<h1>Nome do Estabelecimento</h1>
-			<p>Preencha o formulário ou entre com uma conta do Google
+			<p id="descrição">Preencha o formulário ou entre com uma conta do Google
 				ou Facebook para liberar o acesso ao Wifi</p>
 		</div>
 
+		<div id="loading">
+			<label> Verificando dispositivo </label>
+			<img src="img/loading.gif">
+		</div>
+
+
 		<div id="bvDiv" class="bvdiv">
 			 <label id="bvname"></label>
-			 <button class="red" name="bvlogin" type="button"><i class="icon ion-md-lock"></i> Login </button>
+			 
+			 <button class="red" id="buttonBvlogin" type="button" > Login </button>
+			 		 
 		</div>
     
-    <form id="formulario" class="input-group form">
-			<input type="hidden" name="macaddress" value="74:DE:2B:F1:DB:00" /> <!-- value="$(mac)" -- função RB para obter macaddress -->
+    	<form id="formulario" class="input-group form">
+			<input type="hidden" name="macaddress" value="$(mac)" /> <!-- value="$(mac)" -- função RB para obter macaddress -->
 
 			<label>
 				<input type="text" name="nome" placeholder="Nome" required />
@@ -65,14 +72,14 @@
 			<label>
 				<input type="tel" name="telefone" placeholder="Telefone" required />
 			</label>
-			<button class="red" name="login" type="submit"><i class="icon ion-md-lock"></i> Login </button>
+			<button class="red" name="login" type="submit"> Login </button>
 		</form>
 
 		<div class="btn-group" id="btn-group">
 			<button class="unit" id="buttonForm" type="button"> Formulário </button>
 			<div class="social-auth">
-				<button class="unit" name="button2" id="buttonGoogle" type="button"> Conta Google </button>
-				<button class="unit" name="button3" id="buttonFacebook" type="button"> Facebook </button>
+				<button class="unit" id="buttonGoogle" type="button"> Conta Google </button>
+				<button class="unit" id="buttonFacebook" type="button"> Facebook </button>
 			</div>
 		</div>
 
@@ -83,7 +90,7 @@
 
 		// Import the functions you need from the SDKs you need
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
-		import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
+		//import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
 		import { getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
 		import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
 		// TODO: Add SDKs for Firebase products that you want to use
@@ -103,51 +110,41 @@
 
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
-		const analytics = getAnalytics(app);
+		//const analytics = getAnalytics(app);
 		const db = getFirestore(app);
 		const auth = getAuth(app);
 		const provider = new GoogleAuthProvider();
 
-		function showForm() {
-			document.getElementById("formulario").style.display = "flex";
-			document.getElementById("btn-group").style.display = "none";
+		function show(id,display) {
+			document.getElementById(id).style.display = display;
 		}
 
 		async function gravar(mac, name, email, phone) {
 
-			const data = {
-				macaddress: mac,
+			try {
+			const docRef = await setDoc(doc(db, "users",mac), {
 				nome: name,
 				email: email,
 				telefone: phone
-			}
-
-			try {
-			const docRef = await setDoc(doc(db, "users",Mac), {
-				//macaddress:   Mac ,
-				nome: Nome,
-				email: Email,
-				telefone: Telefone
 			});
-			console.log("Document written with ID: ", docRef.id);
+			//console.log("Document written with ID: ", mac);
 			} catch (e) {
 				console.error("Error adding document: ", e);
 			}
-
-
 		}
 
-		async function getDb (Mac){
+		async function boasVindas(){ 
 
-			const docSnap = await getDoc(doc(db,"users",Mac));
-
+			const mac = document.getElementsByName("macaddress")[0].value;
+			const docSnap = await getDoc(doc(db,"users",mac));
+			show("loading","none");
 
 			if(docSnap.exists()){
-
-				document.getElementById("bvname").innerHTML = "Seja bem vindo " + docSnap.data().nome;
-
-				showDiv("bvDiv");
-				
+				document.getElementById("bvname").innerHTML = "Seja bem vindo " +docSnap.data().nome;
+				show("bvDiv","flex");				
+			}else{
+				show("descrição","flex");
+				show("btn-group","flex");
 			}
 
 		}
@@ -158,9 +155,9 @@
 				.then((result) => {
 					// The signed-in user info.
 					const user = result.user;
-					console.log(user);
-					gravar("0", user.displayName, user.email, user.phoneNumber);
-
+					const mac = document.getElementsByName("macaddress")[0].value;
+					gravar(mac, user.displayName, user.email, user.phoneNumber);
+					doLogin() 
 				}).catch((error) => {
 					// Handle Errors here.
 					const errorCode = error.code;
@@ -175,26 +172,37 @@
 
 		function submitForm(event) {
 			event.preventDefault();
-
+			const mac = document.getElementsByName("macaddress")[0].value;
 			const name = document.getElementsByName("nome")[0].value;
 			const email = document.getElementsByName("email")[0].value;
 			const phone = document.getElementsByName("telefone")[0].value;
 
-
-			gravar("0", name, email, phone);
+			gravar(mac, name, email, phone)
+			doLogin();		
 		}
+
+		function clicForm() {
+			show("descrição","none");
+			show("formulario", "flex");
+			show("buttonForm", "none" );
+
+		}
+
+		
     
-    window.onload = getDb ("74:DE:2B:F1:DB:00");
+    window.onload = boasVindas();
 
 		const form = document.getElementById("formulario");
-		form.addEventListener('submit', () => submitForm(event));
+		form.addEventListener('submit',  function () { submitForm(event)});
 
 		const buttonForm = document.getElementById("buttonForm");
 		const buttonFacebook = document.getElementById("buttonFacebook");
 		const buttonGoogle = document.getElementById("buttonGoogle");
+		const buttonBvlogin = document.getElementById("buttonBvlogin");
 
-		buttonForm.addEventListener('click', () => showForm());
-		buttonGoogle.addEventListener('click', function () { loginGoogle() });
+		buttonForm.addEventListener('click', function () { clicForm()});
+		buttonGoogle.addEventListener('click', function () { loginGoogle()});
+		buttonBvlogin.addEventListener('click', function () { doLogin()});
 
 	</script>
 
