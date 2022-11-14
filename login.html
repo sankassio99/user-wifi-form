@@ -89,10 +89,10 @@
 		// Podemos criar um arquivo .js para tirar esse script daqui, to deixando ele aqui por enquanto para ficar mais facil de editar  
 
 		// Import the functions you need from the SDKs you need
-		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+		import { initializeApp } from "/scripts/firebase-app.js";
 		//import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
-		import { getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
-		import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
+		import { getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteField } from "/scripts/firebase-firestore.js";
+		import { getAuth, signInWithRedirect, onAuthStateChanged, getRedirectResult, GoogleAuthProvider,signOut} from "/scripts/firebase-auth.js";
 		// TODO: Add SDKs for Firebase products that you want to use
 		// https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -120,14 +120,14 @@
 		}
 
 		async function gravar(mac, name, email, phone) {
-
 			try {
 			const docRef = await setDoc(doc(db, "users",mac), {
 				nome: name,
 				email: email,
 				telefone: phone
 			});
-			//console.log("Document written with ID: ", mac);
+			signOut(auth); //Desloga qualquer conta firebase que possa estar logada (prevensão de bug)
+			doLogin(); // assim que gravar chama a função para fazer login na RB
 			} catch (e) {
 				console.error("Error adding document: ", e);
 			}
@@ -146,28 +146,23 @@
 				show("descrição","flex");
 				show("btn-group","flex");
 			}
-
+		}
+		
+		function loginGoogle (){
+			signInWithRedirect(auth, provider);	
 		}
 
-		function loginGoogle (){
-
-			signInWithPopup(auth, provider)
-				.then((result) => {
-					// The signed-in user info.
-					const user = result.user;
+		function checkUser(){ // função usada apos o loginGoogle (e futuramente loginFacebook)
+			onAuthStateChanged(auth, (user) => {
+				if (user) {
+					// Se usuario estiver logado, grava os dados dele
+					// https://firebase.google.com/docs/reference/js/firebase.User
 					const mac = document.getElementsByName("macaddress")[0].value;
 					gravar(mac, user.displayName, user.email, user.phoneNumber);
-					doLogin() 
-				}).catch((error) => {
-					// Handle Errors here.
-					const errorCode = error.code;
-					const errorMessage = error.message;
-					// The email of the user's account used.
-					const email = error.customData.email;
-					// The AuthCredential type that was used.
-					const credential = GoogleAuthProvider.credentialFromError(error);
-					// ...
-				});
+				} else {
+					boasVindas(); // usuario não estiver logado chma a função de boas vindas 
+				}
+			});
 		}
 
 		function submitForm(event) {
@@ -177,8 +172,7 @@
 			const email = document.getElementsByName("email")[0].value;
 			const phone = document.getElementsByName("telefone")[0].value;
 
-			gravar(mac, name, email, phone)
-			doLogin();		
+			gravar(mac, name, email, phone)	
 		}
 
 		function clicForm() {
@@ -190,7 +184,7 @@
 
 		
     
-    window.onload = boasVindas();
+    window.onload = checkUser();
 
 		const form = document.getElementById("formulario");
 		form.addEventListener('submit',  function () { submitForm(event)});
